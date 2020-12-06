@@ -2,6 +2,7 @@ package kz.iitu.zuul;
 
 import javax.servlet.http.HttpServletResponse;
 
+import kz.iitu.commonservice.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -11,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import kz.iitu.commonservice.services.JwtConfig;
 
 public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
     @Autowired
