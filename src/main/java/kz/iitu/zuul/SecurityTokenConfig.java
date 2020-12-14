@@ -1,10 +1,5 @@
 package kz.iitu.zuul;
 
-import javax.servlet.http.HttpServletResponse;
-
-import kz.iitu.commonservice.JwtConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,26 +9,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 
 public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private JwtConfig jwtConfig;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                // make sure we use stateless session; session won't be used to store user's state.
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .exceptionHandling().authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-                .and()
-                .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
+                .antMatchers( HttpMethod.POST,"/auth").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/registration").permitAll()
+                .antMatchers(HttpMethod.OPTIONS,"*").permitAll()//allow CORS option calls
                 .anyRequest().authenticated();
-    }
-
-    @Bean
-    public JwtConfig jwtConfig() {
-        return new JwtConfig();
     }
 }
